@@ -1,0 +1,25 @@
+@model IEnumerable<FirmezaPro.Domain.Entities.Product>
+
+<h1>Productos</h1>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Nombre</th>
+        <th>Descripción</th>
+        <th>Precio</th>
+        <th>Stock</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var product in Model)
+    {
+        <tr>
+            <td>@product.Name</td>
+            <td>@product.Description</td>
+            <td>@product.Price</td>
+            <td>@product.Stock</td>
+        </tr>
+    }
+    </tbody>
+</table>

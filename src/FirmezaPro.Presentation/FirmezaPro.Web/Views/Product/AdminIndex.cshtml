@@ -1,0 +1,38 @@
+@model IEnumerable<FirmezaPro.Domain.Entities.Product>
+
+@{
+    ViewData["Title"] = "Panel de Productos - Admin";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<a class="btn btn-primary mb-3" asp-action="Create">Crear Nuevo Producto</a>
+
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Nombre</th>
+        <th>Descripción</th>
+        <th>Precio</th>
+        <th>Stock</th>
+        <th>Activo</th>
+        <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var product in Model)
+    {
+        <tr>
+            <td>@product.Name</td>
+            <td>@product.Description</td>
+            <td>@product.Price.ToString("C")</td>
+            <td>@product.Stock</td>
+            <td>@(product.IsActive ? "Sí" : "No")</td>
+            <td>
+                <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@product.Id">Editar</a>
+                <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@product.Id">Eliminar</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
