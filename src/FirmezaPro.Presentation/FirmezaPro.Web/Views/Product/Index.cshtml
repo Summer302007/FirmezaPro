@@ -1,4 +1,4 @@
-@model IEnumerable<FirmezaPro.Domain.Entities.Product>
+@model FirmezaPro.Web.Models.Products.ProductListViewModel
 
 <h1>Productos</h1>
 
@@ -12,7 +12,7 @@
     </tr>
     </thead>
     <tbody>
-    @foreach (var product in Model)
+    @foreach (var product in Model.Products)
     {
         <tr>
             <td>@product.Name</td>

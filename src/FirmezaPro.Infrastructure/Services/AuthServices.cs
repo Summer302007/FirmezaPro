@@ -4,7 +4,9 @@ using FirmezaPro.Application.Interfaces.Auth;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 
-namespace AuthIdentity.Infrastructure.Services;
+
+
+namespace FirmezaPro.Infrastructure.Services;
 
 public class AuthService : IAuthService
 {
@@ -88,7 +90,7 @@ public class AuthService : IAuthService
    public async Task<AuthResultDto> GetCurrentUserAsync()
 {
         // Obtener el Id del usuario actual
-        var userId = _httpContextAccessor.HttpContext?.User
+        var userId = _httpContextAccessor.HttpContext?.User 
             ?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
         if (string.IsNullOrEmpty(userId))

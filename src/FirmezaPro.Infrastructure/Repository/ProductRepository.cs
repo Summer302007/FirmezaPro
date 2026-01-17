@@ -3,7 +3,7 @@ using FirmezaPro.Infrastructure.Persistence;
 using FirnezaPro.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace FirnezaPro.Infrastructure.Repositories
+namespace FirmezaPro.Infrastructure.Repository
 {
     public class ProductRepository : IProductRepository
     {
@@ -13,16 +13,38 @@ namespace FirnezaPro.Infrastructure.Repositories
         {
             _context = context;
         }
-
-        public async Task<IEnumerable<Product>> GetAllAsync()
+        
+        public IQueryable<Product> Query()
         {
-            return await _context.Products.ToListAsync();
+            return _context.Products.AsNoTracking();
+        }
+        
+        public async Task<IReadOnlyList<Product>> GetPagedAsync(
+            string? search,
+            int page,
+            int pageSize)
+        {
+            var query = _context.Products.AsNoTracking();
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(p =>
+                    p.Name.Contains(search) ||
+                    p.Description.Contains(search));
+            }
+
+            return await query
+                .OrderBy(p => p.Name)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize + 1)
+                .ToListAsync();
         }
 
-        public async Task<Product> GetByIdAsync(Guid id)
+        public async Task<Product?> GetByIdAsync(Guid id)
         {
             return await _context.Products.FindAsync(id);
         }
+
 
         public async Task AddAsync(Product product)
         {

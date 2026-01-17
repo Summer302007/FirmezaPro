@@ -1,14 +1,17 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using FirmezaPro.Domain.Entities;
 
-namespace FirmezaPro.Infrastructure.Persistence
+
+namespace FirmezaPro.Infrastructure.Persistence;
+
+public class ApplicationDbContext
+    : IdentityDbContext<IdentityUser, IdentityRole, string>
 {
-    public class ApplicationDbContext : DbContext
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        : base(options)
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options)
-        {
-        }
-        public DbSet<Product> Products => Set<Product>();
     }
+
+    public DbSet<Product> Products => Set<Product>();
 }

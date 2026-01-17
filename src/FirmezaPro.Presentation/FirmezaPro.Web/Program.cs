@@ -1,11 +1,11 @@
 using AuthIdentity.Infrastructure.Identity;
-using AuthIdentity.Infrastructure.Services;
 using FirmezaPro.Application.Interfaces;
 using FirmezaPro.Application.Interfaces.Auth;
 using FirmezaPro.Application.Services;
 using FirmezaPro.Infrastructure.Persistence;
+using FirmezaPro.Infrastructure.Repository;
+using FirmezaPro.Infrastructure.Services;
 using FirnezaPro.Domain.Interfaces;
-using FirnezaPro.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,5 +1,6 @@
 using FirmezaPro.Application.Interfaces;
 using FirmezaPro.Domain.Entities;
+using FirmezaPro.Web.Models.Products;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,34 +17,71 @@ namespace FirmezaPro.Web.Controllers
         }
 
         // 👉 Método único para mostrar productos según rol
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? search, int page = 1)
         {
-            var products = await _productService.GetAllAsync();
+            const int pageSize = 10;
 
-            // Detectar rol
+            var result = await _productService.GetPagedAsync(search, page, pageSize);
+
+            var productsVm = result.Items.Select(p => new ProductViewModel
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Description = p.Description,
+                Price = p.Price,
+                Stock = p.Stock,
+                IsActive = p.IsActive
+            }).ToList();
+
             if (User.IsInRole("Admin"))
-                return View("AdminIndex", products); // Vista del Admin
-            else
-                return View("Index", products);      // Vista del Customer
-        }
+            {
+                var adminVm = new AdminProductListViewModel
+                {
+                    Products = productsVm,
+                    Page = page,
+                    PageSize = pageSize,
+                    HasNextPage = result.HasNextPage,
+                    Search = search
+                };
 
+                return View("AdminIndex", adminVm);
+            }
+
+            var userVm = new ProductListViewModel
+            {
+                Products = productsVm,
+                Page = page,
+                HasNextPage = result.HasNextPage,
+                Search = search
+            };
+
+            return View("Index", userVm);
+        }
+        
         // 👑 ADMIN → Crear producto
         [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
-            return View(); // Views/Product/Create.cshtml
+            return View(new CreateProductViewModel());
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Create(Product model)
+        public async Task<IActionResult> Create(CreateProductViewModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            await _productService.AddProductAsync(model);
-            return RedirectToAction(nameof(Index)); // Redirige al método Index que detecta rol
+            var product = new Product(
+                model.Name,
+                model.Description,
+                model.Price,
+                model.Stock,
+                model.IsActive
+            );
+            await _productService.AddProductAsync(product);
+            return RedirectToAction(nameof(Index));
         }
 
         // 👑 ADMIN → Editar producto
