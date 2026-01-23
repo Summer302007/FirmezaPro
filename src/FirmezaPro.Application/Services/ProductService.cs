@@ -14,14 +14,7 @@ namespace FirmezaPro.Application.Services
             _repository = repository;
         }
 
-        public async Task<List<Product>> GetAllAsync(string? search, int page, int pageSize)
-        {
-            return (List<Product>)await _repository.GetPagedAsync(search, page, pageSize);
-        }
-
-
-        public async Task<PagedResult<Product>> GetPagedAsync(
-            string? search,
+        public async Task<PagedResult<Product>> GetPagedAsync(string? search,
             int page,
             int pageSize)
         {
@@ -35,18 +28,18 @@ namespace FirmezaPro.Application.Services
                 HasNextPage = items.Count > pageSize
             };
         }
-
+        
         public async Task<Product> GetByIdAsync(Guid id)
         {
             var product = await _repository.GetByIdAsync(id);
             if (product == null)
                 throw new Exception("Producto no encontrado");
+
             return product;
         }
 
         public async Task AddProductAsync(Product product)
         {
-            // Aquí podés agregar lógica adicional antes de guardar
             await _repository.AddAsync(product);
         }
 

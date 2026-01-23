@@ -19,18 +19,17 @@ namespace FirmezaPro.Infrastructure.Repository
             return _context.Products.AsNoTracking();
         }
         
-        public async Task<IReadOnlyList<Product>> GetPagedAsync(
-            string? search,
-            int page,
-            int pageSize)
+        public async Task<IReadOnlyList<Product>> GetPagedAsync(string? search, int page, int pageSize)
         {
-            var query = _context.Products.AsNoTracking();
+            var query = _context.Products.AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(search))
             {
+                search = search.Trim();
+
                 query = query.Where(p =>
-                    p.Name.Contains(search) ||
-                    p.Description.Contains(search));
+                    EF.Functions.ILike(p.Name, $"%{search}%") ||
+                    EF.Functions.ILike(p.Description, $"%{search}%"));
             }
 
             return await query
@@ -39,8 +38,8 @@ namespace FirmezaPro.Infrastructure.Repository
                 .Take(pageSize + 1)
                 .ToListAsync();
         }
-
-        public async Task<Product?> GetByIdAsync(Guid id)
+        
+         public async Task<Product?> GetByIdAsync(Guid id)
         {
             return await _context.Products.FindAsync(id);
         }
