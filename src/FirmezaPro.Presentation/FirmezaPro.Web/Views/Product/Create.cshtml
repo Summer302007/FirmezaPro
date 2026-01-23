@@ -31,6 +31,14 @@
         <span asp-validation-for="Stock" class="text-danger"></span>
     </div>
 
+    <div class="form-check mb-3">
+        <input class="form-check-input" asp-for="IsActive" />
+        <label class="form-check-label" asp-for="IsActive">
+            Producto activo
+        </label>
+        <span asp-validation-for="IsActive" class="text-danger"></span>
+    </div>
+    
     <button type="submit" class="btn btn-success">Crear</button>
     <a asp-action="AdminIndex" class="btn btn-secondary">Cancelar</a>
 </form>
