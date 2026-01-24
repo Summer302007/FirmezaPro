@@ -1,4 +1,5 @@
 using AuthIdentity.Infrastructure.Identity;
+using FirmezaPro.Domain.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

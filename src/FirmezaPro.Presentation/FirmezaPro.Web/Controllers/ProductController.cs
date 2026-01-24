@@ -92,31 +92,43 @@ namespace FirmezaPro.Web.Controllers
             if (product == null)
                 return NotFound();
 
-            return View(product); // Views/Product/Edit.cshtml
+            var vm = new EditProductViewModel
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Description = product.Description,
+                Price = product.Price,
+                Stock = product.Stock,
+                IsActive = product.IsActive
+            };
+
+            return View(vm);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Edit(Guid id, Product model)
+        public async Task<IActionResult> Edit(EditProductViewModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            try
-            {
-                await _productService.UpdateProductAsync(model);
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError("", ex.Message);
-                return View(model);
-            }
+            var product = await _productService.GetByIdAsync(model.Id);
+
+            product.Edit(
+                model.Name,
+                model.Description,
+                model.Price,
+                model.Stock,
+                model.IsActive
+            );
+
+            await _productService.UpdateProductAsync(product);
 
             return RedirectToAction(nameof(Index));
         }
-
-        // 👑 ADMIN → Eliminar producto
+        
+         // 👑 ADMIN → Eliminar producto
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(Guid id)
         {
