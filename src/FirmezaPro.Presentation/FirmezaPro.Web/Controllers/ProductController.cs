@@ -129,34 +129,35 @@ namespace FirmezaPro.Web.Controllers
         }
         
          // 👑 ADMIN → Eliminar producto
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Delete(Guid id)
-        {
-            var product = await _productService.GetByIdAsync(id);
-            if (product == null)
-                return NotFound();
+         [Authorize(Roles = "Admin")]
+         public async Task<IActionResult> Delete(Guid id)
+         {
+             var product = await _productService.GetByIdAsync(id);
+             if (product == null)
+                 return NotFound();
 
-            return View(product); // Views/Product/Delete.cshtml
-        }
+             var vm = new DeleteProductViewModel
+             {
+                 Id = product.Id,
+                 Name = product.Name,
+                 Description = product.Description,
+                 Price = product.Price,
+                 Stock = product.Stock,
+                 IsActive = product.IsActive
+             };
 
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
-        {
-            try
-            {
-                await _productService.DeleteProductAsync(id);
-            }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError("", ex.Message);
-                var product = await _productService.GetByIdAsync(id);
-                return View(product);
-            }
+             return View(vm);
+         }
 
-            return RedirectToAction(nameof(Index));
-        }
+         [HttpPost]
+         [ValidateAntiForgeryToken]
+         [Authorize(Roles = "Admin")]
+         public async Task<IActionResult> Delete(DeleteProductViewModel model)
+         {
+             await _productService.DeleteProductAsync(model.Id);
+             return RedirectToAction(nameof(Index));
+         }
+
     }
 }
 
